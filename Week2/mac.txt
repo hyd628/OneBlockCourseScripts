@@ -1,0 +1,4 @@
+curl https://getsubstrate.io -sSf | bash -s -- --fast
+git clone -b tutorial-v7 https://github.com/PureStake/moonbeam
+cd moonbeam
+cargo build --release

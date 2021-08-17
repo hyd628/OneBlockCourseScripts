@@ -1,0 +1,15 @@
+##备至Linux环境和安装Moonbeam节点
+apt-get update && \
+      apt-get -y install sudo
+sudo apt install -y git clang curl libssl-dev llvm libudev-dev
+curl https://getsubstrate.io -sSf | bash -s -- --fast
+rustup
+source $HOME/.cargo/env
+git clone -b tutorial-v7 https://github.com/PureStake/moonbeam
+cd /moonbeam
+cargo build --release
+
+
+
+##运行
+./target/release/moonbeam --dev

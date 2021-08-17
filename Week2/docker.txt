@@ -1,0 +1,7 @@
+## Docker图像下载和运行
+docker
+docker search ubuntu
+docker pull ubuntu:18.04
+docker run -t -d --name ubuntu_lesson2 ubuntu:18.04 
+docker exec -it ubuntu_lesson2 /bin/bash
+
