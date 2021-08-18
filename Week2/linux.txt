@@ -6,7 +6,7 @@ curl https://getsubstrate.io -sSf | bash -s -- --fast
 rustup
 source $HOME/.cargo/env
 git clone -b tutorial-v7 https://github.com/PureStake/moonbeam
-cd /moonbeam
+cd moonbeam/
 cargo build --release
 
 
