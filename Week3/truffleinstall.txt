@@ -1,5 +1,23 @@
+##Install Truffle
+
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 sudo apt install nodejs
 node --version
 npm install -g truffle
 truffle version
+
+
+##Install Moonbeam Truffle Box
+
+mkdir moonbeam-truffle-box && cd moonbeam-truffle-box
+truffle unbox PureStake/moonbeam-truffle-box
+
+
+##Install Moonbeam node
+truffle run moonbeam install
+truffle run moonbeam start
+truffle run moonbeam status
+
+##MetaMask Setting Documentation
+https://docs.moonbeam.network/cn/getting-started/local-node/using-metamask/
+
