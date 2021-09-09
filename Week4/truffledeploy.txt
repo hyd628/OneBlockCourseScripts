@@ -1,0 +1,5 @@
+truffle run moonbeam start
+truffle compile
+truffle test
+truffle migrate --network dev
+truffle migrate --network moonbase
