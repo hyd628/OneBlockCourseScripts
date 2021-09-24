@@ -8,5 +8,5 @@ A: Substrate是开发Moonbeam的现有最优选择，它是功能强大的区块
 A: truffle box和native code编译方式；本地方式能更深入了解moonbeam具体实现，truffle box方式则更加自动化；也可以利用remix在线编译，并upload到moonbase alpha测试网。
 
 ## Q3: truffle run moonbeam install报错：Error:moonbeam-truffle-plugin listed as a plugin,but not found in global or local node modules!
-![图1:报错截图](./p1.jpeg)   
+![图1:报错截图](Week1/p1.jpeg)   
 A: 在$Path环境变量里面加上/.npm-global/bin/
