@@ -11,14 +11,14 @@ A: truffle box和native code编译方式；本地方式能更深入了解moonbea
 ![图1:报错截图](Week1/p1.jpeg)   
 A: 在$Path环境变量里面加上/.npm-global/bin/
 
-## Q3. 安装最新的nodejs truffle安装失败了，哪个nodejs版本比较好？
+## Q4. 安装最新的nodejs truffle安装失败了，哪个nodejs版本比较好？
 
 A: v15.x
 
 比视频课程中的版本高也是可以的，目前没有发现nodejs最新版不兼容问题。
 
 
-## Q4. 安装报错如下
+## Q5. 安装报错如下
 
 ```
 Error: moonbeam-truffle-plugin listed as a plugin, but not found in global or local node modules!  
@@ -47,7 +47,7 @@ truffle run moonbeam install
 以上就可以安装成功了。
 
 
-## Q5. 安装报错如下
+## Q6. 安装报错如下
 
 ```
 (base) ➜  moonbeam-truffle-box truffle run moonbeam install
@@ -85,18 +85,18 @@ cd moonbeam-truffle-box
 npm install @truffle/hdwallet-provider
 ```
 
-## Q6. truffle run moonbeam start 启动的时候用的端口是 9933， 如何修改 moonbeam start 的docker 占用的端口？
+## Q7. truffle run moonbeam start 启动的时候用的端口是 9933， 如何修改 moonbeam start 的docker 占用的端口？
 
 A:
 1. 先检查是否已经在运行一个Moonbeam Docker 容器了 ，如果已经有运行，就不要再开第二个了。
 2. 要修改hostconfig.json, 可参考：```https://stackoverflow.com/questions/19335444/how-do-i-assign-a-port-mapping-to-an-existing-docker-container```
 
 
-## Q7. 直接在mac操作是不需要用到docker了吗？
+## Q8. 直接在mac操作是不需要用到docker了吗？
 
 A: 可以不用Docker，第四课也会介绍Moonbase Alpha测试网 所以不想在本地运行节点也可以直接部署到测试网。
 
-## Q8. 测试代币领取问题：按照视频里介绍的discord获取代币的方法，机器人回复Transaction of funds消息后，为什么metamask里显示代码还是0 DEV啊？
+## Q9. 测试代币领取问题：按照视频里介绍的discord获取代币的方法，机器人回复Transaction of funds消息后，为什么metamask里显示代码还是0 DEV啊？
 
 A: 确认你的metamask连接了Moonbase Alpha，用浏览器查一下transaction hash。
 
@@ -104,7 +104,7 @@ A: 确认你的metamask连接了Moonbase Alpha，用浏览器查一下transactio
 
 ```https://docs.moonbeam.network/cn/getting-started/moonbase/metamask/``` Metamask连接Moonbase Alpha的方法
 
-## Q9. 部署网络问题
+## Q10. 部署网络问题
 
 A: 国内可能有网络问题。不要开命令行代理，直接migrate，这样也许还能成，还有就是账户里要有钱，先去水龙头搞测试币。
 
@@ -113,12 +113,12 @@ A: 国内可能有网络问题。不要开命令行代理，直接migrate，这�
 如果遇到网络问题，也可以试试开全局代码。
 
 
-## Q10. gas price问题，我的gas price 为0，cost为 0，正常吗我的gas price 为0，cost为 0，正常吗？
+## Q11. gas price问题，我的gas price 为0，cost为 0，正常吗我的gas price 为0，cost为 0，正常吗？
 
 A: 本地开发节点是可以这样的
 
 
-## Q11. 安装问题，找不到这个模块 truffle/hdwallet-provider
+## Q12. 安装问题，找不到这个模块 truffle/hdwallet-provider
 
 A:
 
@@ -126,6 +126,6 @@ A:
 npm install @truffle/hdwallet-provider
 ```
 
-## Q12. 课程中discord链接失效
+## Q13. 课程中discord链接失效
 
 A: 第四课 Discord 邀请链接过期， 请用这个邀请链接：https://discord.gg/ssvKu6Un8v
