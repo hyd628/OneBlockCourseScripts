@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
-contract NominationDAO is AccessControl {
+contract NominationDAOPayable is AccessControl {
     using SafeMath for uint256;
 
     // Role definition for contract members (approved by admin)
@@ -14,6 +14,7 @@ contract NominationDAO is AccessControl {
     
     // Member stakes (doesnt include rewards, represents member shares)
     mapping(address => uint256) public memberStakes;
+    
     // Total Stake (doesnt include rewards, represents total shares)
     uint256 public totalStake;
 
@@ -62,6 +63,8 @@ contract NominationDAO is AccessControl {
         .mul(memberStakes[msg.sender])
         .div(totalStake);
         Address.sendValue(account, amount);
+        totalStake = totalStake.sub(memberStakes[msg.sender]);
         memberStakes[msg.sender] = 0;
     }
+    
 }
