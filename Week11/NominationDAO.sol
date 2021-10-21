@@ -16,7 +16,7 @@ contract NominationDAO is AccessControl {
     // Member stakes (doesnt include rewards, represents member shares)
     mapping(address => uint256) public memberStakes;
     
-    // Total Stake (doesnt include rewards, represents total shares)
+    // Total Staking Pool (doesnt include rewards, represents total shares)
     uint256 public totalStake;
 
     /// The ParachainStaking wrapper at the known pre-compile address. This will be used to make
@@ -75,57 +75,59 @@ contract NominationDAO is AccessControl {
     function add_stake() external payable onlyRole(MEMBER) {
         memberStakes[msg.sender] = memberStakes[msg.sender].add(msg.value);
         totalStake = totalStake.add(msg.value);
+        // check if we are already nominating
+        if (staking.is_nominator(address(this))) {
+            staking.nominator_bond_more(target, msg.value);
+        }
+        else {
+            if(address(this).balance < MinNominatorStk){
+                revert("Balance is less than minimum nomination amount.");
+            } else {
+                //initialiate the nomination
+                staking.nominate(target, address(this).balance, staking.collator_nomination_count(target), staking.nominator_nomination_count(address(this)));
+            }
+        }
     }
 
     // Function for a user to cash out
     function cash_out(address payable account) public onlyRole(MEMBER) {
-        uint256 amount = address(this)
-        .balance
+        //minimum amount returned
+        uint amount = memberStakes[msg.sender];
+        uint stakingRewards = 0;
+        if (address(this).balance != 0){
+            stakingRewards = address(this)
+            .balance
+            .mul(memberStakes[msg.sender])
+            .div(totalStake);
+        }
+        if ((totalStake - memberStakes[msg.sender]) >= MinNominatorStk){
+                staking.nominator_bond_less(target, memberStakes[msg.sender]); 
+                Address.sendValue(account, amount + stakingRewards);
+                totalStake = totalStake.sub(memberStakes[msg.sender]);
+                memberStakes[msg.sender] = 0;
+        } else{
+            staking.revoke_nomination(target);
+        }
+    }
+    
+    function retrieve_revoked_cash(address payable account) public onlyRole(MEMBER){
+        uint stakingRewards = (address(this).balance - memberStakes[msg.sender])
         .mul(memberStakes[msg.sender])
         .div(totalStake);
-        Address.sendValue(account, amount);
+        require(address(this).balance >= memberStakes[msg.sender]+stakingRewards, "Not enough free balance!");
+        Address.sendValue(account, memberStakes[msg.sender]+stakingRewards);
         totalStake = totalStake.sub(memberStakes[msg.sender]);
         memberStakes[msg.sender] = 0;
     }
-
-    /// Update the on-chain nomination to reflect any recently-contributed nominations.
-    function update_nomination(address _target) public onlyRole(DEFAULT_ADMIN_ROLE)  {
-        // If we are already nominating, we need to remove the old nomination first
-        if (staking.is_nominator(address(this))) {
-            staking.revoke_nomination(target);
-        }
-        target = _target;
-        // If we have enough funds to nominate, we should start a nomination
-        if (address(this).balance > MinNominatorStk) {
-
-            staking.nominate(target, address(this).balance, staking.collator_nomination_count(target), staking.nominator_nomination_count(address(this)));
-        } else {
-            revert("NominationBelowMin");
-        }
-    }
     
-    
-    
-    //Unstake this amount, there is a waiting period
-    function unstake() public onlyRole(MEMBER) {
-        staking.nominator_bond_less(target, memberStakes[msg.sender]);
-    }
-    
+    //Check how much free balance the DAO currently has. It should be the staking rewards. 
     function check_free_balance() public view onlyRole(MEMBER) returns(uint256){
         return address(this).balance;
     }
-
-    /// Calls directly into the interface.
-    /// Assumes the contract has atleast 10 ether so that the nomination will be successful.
-    function unsafe_attempt_to_nominate() public onlyRole(DEFAULT_ADMIN_ROLE)  {
-        staking.nominate(target, address(this).balance, staking.collator_nomination_count(target), staking.nominator_nomination_count(address(this)));
+    
+    function change_target(address newCollator) public onlyRole(DEFAULT_ADMIN_ROLE){
+        target = newCollator;
     }
 
-    // We need a public receive function to accept ether donations as direct transfers
-    // https://blog.soliditylang.org/2020/03/26/fallback-receive-split/
-    //receive() external payable {
-        // It would be nice to call update_nomination here so it happens automatically.
-        // but there is very little gas available when just sending a normal transfer.
-        // So instead we rely on manually calling update_nomination
-    //}
+
 }
