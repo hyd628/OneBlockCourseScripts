@@ -23,8 +23,11 @@ contract NominationDAO is AccessControl {
     /// all calls to the underlying staking solution
     ParachainStaking public staking;
     
-    // TODO Our interface should have an accessor for this.
+    // Minimum Nomination Amount
     uint256 public constant MinNominatorStk = 5 ether;
+    
+    //Moonbem Staking Precompile address
+    address public constant stakingPrecompileAddress = 0x0000000000000000000000000000000000000800;
 
     /// The collator that this DAO is currently nominating
     address public target;
@@ -36,7 +39,7 @@ contract NominationDAO is AccessControl {
         target = _target;
         
         // Initializes Moonbeam's parachain staking precompile
-        staking = ParachainStaking(0x0000000000000000000000000000000000000800);
+        staking = ParachainStaking(stakingPrecompileAddress);
         
         //Initializes Roles
         _setupRole(DEFAULT_ADMIN_ROLE, admin);
@@ -91,22 +94,22 @@ contract NominationDAO is AccessControl {
 
     // Function for a user to cash out
     function cash_out(address payable account) public onlyRole(MEMBER) {
-        //minimum amount returned
-        uint amount = memberStakes[msg.sender];
-        uint stakingRewards = 0;
-        if (address(this).balance != 0){
-            stakingRewards = address(this)
-            .balance
-            .mul(memberStakes[msg.sender])
-            .div(totalStake);
-        }
-        if ((totalStake - memberStakes[msg.sender]) >= MinNominatorStk){
-                staking.nominator_bond_less(target, memberStakes[msg.sender]); 
-                Address.sendValue(account, amount + stakingRewards);
-                totalStake = totalStake.sub(memberStakes[msg.sender]);
-                memberStakes[msg.sender] = 0;
-        } else{
+        if ((totalStake - memberStakes[msg.sender]) < MinNominatorStk){
             staking.revoke_nomination(target);
+        } else {
+            //minimum amount returned
+            uint amount = memberStakes[msg.sender];
+            uint stakingRewards = 0;
+            if (address(this).balance != 0){
+                stakingRewards = address(this)
+                .balance
+                .mul(memberStakes[msg.sender])
+                .div(totalStake);
+            }
+            staking.nominator_bond_less(target, memberStakes[msg.sender]); 
+            Address.sendValue(account, amount + stakingRewards);
+            totalStake = totalStake.sub(memberStakes[msg.sender]);
+            memberStakes[msg.sender] = 0;
         }
     }
     
