@@ -1,0 +1,7 @@
+git clone https://github.com/oraclesorg/oracles-combine-solidity
+cd oracles-combine-solidity
+npm install
+
+# copy the contract files
+
+npm start NominationDao.sol
